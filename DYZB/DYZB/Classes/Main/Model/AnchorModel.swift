@@ -18,9 +18,9 @@ class AnchorModel: NSObject {
     //0：电脑直播 1:手机直播
     var isVertical :Int = 0
     //房间名称
-    var roomName : String = ""
+    var room_name : String = ""
     //主播昵称
-    var nickName : String = ""
+    var nickname : String = ""
     //观看人数
     var online : Int = 0
     //所在城市

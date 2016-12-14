@@ -8,8 +8,8 @@
 
 import Foundation
 
-extension NSDate{
-    class func getCurrentTime()->String {
+extension Date{
+    static func getCurrentTime()->String {
         let nowDate = NSDate()
         let interval = nowDate.timeIntervalSince1970
         return  "\(interval)"

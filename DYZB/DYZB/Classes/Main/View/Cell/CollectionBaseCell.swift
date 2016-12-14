@@ -28,7 +28,7 @@ class CollectionBaseCell: UICollectionViewCell {
             onLineBtn.setTitle(onLineStr, for: .normal)
             
             //2、昵称的显示
-            nickNameLabel.text = anchor.nickName
+            nickNameLabel.text = anchor.nickname
             
             
             //4、设置封面图片

@@ -17,7 +17,7 @@ class CollectionNormalCell: CollectionBaseCell {
    override var anchor : AnchorModel? {
         didSet{
             super.anchor = anchor
-            roomNameLabel.text = anchor?.roomName
+            roomNameLabel.text = anchor?.room_name
         }
     }
 }

@@ -8,8 +8,7 @@
 
 import UIKit
 
-class RecommendViewModel{
-    lazy var anchorGroups : [AnchorGroup] = [AnchorGroup]()
+class RecommendViewModel : BaseViewModel {
     lazy var cycleModels : [CycleModel] = [CycleModel]()
     public lazy var bigDataGroup : AnchorGroup = AnchorGroup()
     public lazy var prettyGroup : AnchorGroup = AnchorGroup()
@@ -20,11 +19,11 @@ class RecommendViewModel{
 extension RecommendViewModel {
     func requestData(finishCallback : @escaping () -> ()){
         //0、定义参数
-        let parameters = ["limit" : "4","offset" : "0","time" : NSDate.getCurrentTime()]
+        let parameters = ["limit" : "4","offset" : "0","time" : Date.getCurrentTime()]
         let dGroup = DispatchGroup()
         //1、请求第一部分推荐数据
         dGroup.enter()
-        NetworkTools.requestData(type: .GET, URLString: "http://capi.douyucdn.cn/api/v1/getbigDataRoom", parameters: ["time" : NSDate.getCurrentTime() as NSString], finishedCallback:{(result) in
+        NetworkTools.requestData(type: .GET, URLString: "http://capi.douyucdn.cn/api/v1/getbigDataRoom", parameters: ["time" : Date.getCurrentTime() as NSString], finishedCallback:{(result) in
             //1、将result转为字典类型
             guard let resultDict = result as? [String : NSObject] else {return}
             
@@ -72,21 +71,24 @@ extension RecommendViewModel {
         })
         //3、请求后面部分游戏数据
         dGroup.enter()
-        NetworkTools.requestData(type: .GET, URLString: "http://capi.douyucdn.cn/api/v1/getHotCate", parameters: parameters as [String : NSString]?, finishedCallback:{(result) in
-            //1、将result转为字典类型
-            guard let resultDict = result as? [String : NSObject] else {return}
-            
-            //2、根据data的key，获取数组
-            guard let dataArray = resultDict["data"] as? [[String : NSObject]] else {return}
-            
-            //3、遍历数组，获取字典，并且字典转成模型对象
-            for dict in dataArray {
-                let group = AnchorGroup(dict: dict)
-                self.anchorGroups.append(group)
-            }
-            //3.2离开组
-              dGroup.leave()
-            })
+        loadAnchorData(URLString: "http://capi.douyucdn.cn/api/v1/getHotCate",parameters: parameters, finishedCallback:{(result) in
+            dGroup.leave()
+        })
+//        NetworkTools.requestData(type: .GET, URLString: "http://capi.douyucdn.cn/api/v1/getHotCate", parameters: parameters as [String : NSString]?, finishedCallback:{(result) in
+//            //1、将result转为字典类型
+//            guard let resultDict = result as? [String : NSObject] else {return}
+//            
+//            //2、根据data的key，获取数组
+//            guard let dataArray = resultDict["data"] as? [[String : NSObject]] else {return}
+//            
+//            //3、遍历数组，获取字典，并且字典转成模型对象
+//            for dict in dataArray {
+//                let group = AnchorGroup(dict: dict)
+//                self.anchorGroups.append(group)
+//            }
+//            //3.2离开组
+//              dGroup.leave()
+//            })
            //6、所有的数据都请求到，之后进行排序
             dGroup.notify(queue: DispatchQueue.main){
                 self.anchorGroups.insert(self.prettyGroup, at: 0)
